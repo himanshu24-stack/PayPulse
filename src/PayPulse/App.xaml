@@ -1,0 +1,39 @@
+<Application x:Class="PayPulse.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:PayPulse"
+             xmlns:vm="clr-namespace:PayPulse.ViewModels"
+             xmlns:views="clr-namespace:PayPulse.Views"
+             xmlns:conv="clr-namespace:PayPulse.Converters">
+    <Application.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <conv:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
+        <conv:CurrencyConverter x:Key="CurrencyConverter"/>
+        <conv:StatusBadgeBgConverter x:Key="StatusBadgeBgConverter"/>
+        <conv:StatusBadgeFgConverter x:Key="StatusBadgeFgConverter"/>
+        <conv:RiskBadgeBgConverter x:Key="RiskBadgeBgConverter"/>
+        <conv:RiskBadgeFgConverter x:Key="RiskBadgeFgConverter"/>
+
+        <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+            <views:DashboardView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:CustomersViewModel}">
+            <views:CustomersView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:InvoicesViewModel}">
+            <views:InvoicesView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:PaymentsViewModel}">
+            <views:PaymentsView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:RiskAnalysisViewModel}">
+            <views:RiskAnalysisView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ReportsViewModel}">
+            <views:ReportsView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+            <views:SettingsView />
+        </DataTemplate>
+    </Application.Resources>
+</Application>

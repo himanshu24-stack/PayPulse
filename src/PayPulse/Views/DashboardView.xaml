@@ -1,0 +1,172 @@
+<UserControl x:Class="PayPulse.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:PayPulse.ViewModels"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=vm:DashboardViewModel}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24">
+        <StackPanel>
+            <!-- Header bar with Refresh button -->
+            <Grid Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Executive Financial Overview" FontSize="20" FontWeight="Bold" Foreground="#0F172A"/>
+                    <TextBlock Text="Live metrics calculated across all active ledger records" FontSize="13" Foreground="#64748B"/>
+                </StackPanel>
+                <Button Command="{Binding LoadDashboardDataCommand}" 
+                        HorizontalAlignment="Right" 
+                        Padding="16,8" 
+                        Background="#0D9488" 
+                        Foreground="White" 
+                        FontWeight="SemiBold" 
+                        BorderThickness="0" 
+                        Cursor="Hand">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="🔄 Refresh Figures" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <!-- 6 KPI Metric Cards Grid -->
+            <UniformGrid Columns="3" Margin="0,0,0,16">
+                <!-- Card 1: Total Invoiced -->
+                <Border Background="White" CornerRadius="8" Padding="18" Margin="0,0,12,12" BorderBrush="#E2E8F0" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="TOTAL INVOICED" FontSize="11" FontWeight="Bold" Foreground="#64748B" Margin="0,0,0,6"/>
+                        <TextBlock Text="{Binding TotalInvoiced, Converter={StaticResource CurrencyConverter}}" 
+                                   FontSize="22" FontWeight="Bold" Foreground="#0F172A"/>
+                        <TextBlock Text="Active billed proposals" FontSize="11" Foreground="#94A3B8" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Card 2: Total Received -->
+                <Border Background="White" CornerRadius="8" Padding="18" Margin="0,0,12,12" BorderBrush="#E2E8F0" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="TOTAL RECEIVED" FontSize="11" FontWeight="Bold" Foreground="#0D9488" Margin="0,0,0,6"/>
+                        <TextBlock Text="{Binding TotalReceived, Converter={StaticResource CurrencyConverter}}" 
+                                   FontSize="22" FontWeight="Bold" Foreground="#0D9488"/>
+                        <TextBlock Text="Verified payments recorded" FontSize="11" Foreground="#94A3B8" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Card 3: Outstanding Receivables -->
+                <Border Background="White" CornerRadius="8" Padding="18" Margin="0,0,0,12" BorderBrush="#E2E8F0" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="OUTSTANDING BALANCE" FontSize="11" FontWeight="Bold" Foreground="#E11D48" Margin="0,0,0,6"/>
+                        <TextBlock Text="{Binding TotalOutstanding, Converter={StaticResource CurrencyConverter}}" 
+                                   FontSize="22" FontWeight="Bold" Foreground="#E11D48"/>
+                        <TextBlock Text="Pending collection from clients" FontSize="11" Foreground="#94A3B8" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Card 4: Overdue Invoices -->
+                <Border Background="White" CornerRadius="8" Padding="18" Margin="0,0,12,0" BorderBrush="#E2E8F0" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="OVERDUE INVOICES" FontSize="11" FontWeight="Bold" Foreground="#B91C1C" Margin="0,0,0,6"/>
+                        <TextBlock Text="{Binding OverdueInvoicesCount}" 
+                                   FontSize="22" FontWeight="Bold" Foreground="#B91C1C"/>
+                        <TextBlock Text="Past due date requiring action" FontSize="11" Foreground="#94A3B8" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Card 5: Collection Rate -->
+                <Border Background="White" CornerRadius="8" Padding="18" Margin="0,0,12,0" BorderBrush="#E2E8F0" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="COLLECTION RATE" FontSize="11" FontWeight="Bold" Foreground="#0284C7" Margin="0,0,0,6"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding CollectionRate, StringFormat={}{0}%}" 
+                                       FontSize="22" FontWeight="Bold" Foreground="#0284C7"/>
+                        </StackPanel>
+                        <ProgressBar Value="{Binding CollectionRate}" Maximum="100" Height="6" Margin="0,8,0,0" Foreground="#0284C7"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Card 6: Active Customers -->
+                <Border Background="White" CornerRadius="8" Padding="18" Margin="0,0,0,0" BorderBrush="#E2E8F0" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="ACTIVE CLIENTS" FontSize="11" FontWeight="Bold" Foreground="#475569" Margin="0,0,0,6"/>
+                        <TextBlock Text="{Binding ActiveCustomersCount}" 
+                                   FontSize="22" FontWeight="Bold" Foreground="#0F172A"/>
+                        <TextBlock Text="Registered business entities" FontSize="11" Foreground="#94A3B8" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <!-- Overdue Invoices Alert Section -->
+            <Border Background="#FEF2F2" BorderBrush="#FECACA" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="⚠️ Invoices Requiring Urgent Follow-up" FontSize="15" FontWeight="Bold" Foreground="#991B1B" Margin="0,0,0,8"/>
+                    <DataGrid ItemsSource="{Binding OverdueInvoices}" 
+                              AutoGenerateColumns="False" 
+                              IsReadOnly="True" 
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              Background="White"
+                              BorderBrush="#FCA5A5"
+                              BorderThickness="1"
+                              HeadersVisibility="Column"
+                              RowHeight="36"
+                              GridLinesVisibility="Horizontal"
+                              HorizontalGridLinesBrush="#FEE2E2">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Invoice #" Binding="{Binding InvoiceNumber}" Width="120" FontWeight="SemiBold"/>
+                            <DataGridTextColumn Header="Client Name" Binding="{Binding Customer.Name}" Width="*"/>
+                            <DataGridTextColumn Header="Due Date" Binding="{Binding DueDate, StringFormat=dd-MMM-yyyy}" Width="120"/>
+                            <DataGridTextColumn Header="Total Amount" Binding="{Binding TotalAmount, Converter={StaticResource CurrencyConverter}}" Width="140"/>
+                            <DataGridTemplateColumn Header="Status" Width="110">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border Background="#FEE2E2" CornerRadius="4" Padding="6,2" HorizontalAlignment="Left">
+                                            <TextBlock Text="OVERDUE" FontSize="11" FontWeight="Bold" Foreground="#991B1B"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+
+            <!-- Recent Invoices Table -->
+            <Border Background="White" CornerRadius="8" BorderBrush="#E2E8F0" BorderThickness="1" Padding="16">
+                <StackPanel>
+                    <TextBlock Text="Recent Invoices" FontSize="16" FontWeight="Bold" Foreground="#0F172A" Margin="0,0,0,12"/>
+                    <DataGrid ItemsSource="{Binding RecentInvoices}" 
+                              AutoGenerateColumns="False" 
+                              IsReadOnly="True" 
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              Background="Transparent"
+                              BorderBrush="#E2E8F0"
+                              BorderThickness="1"
+                              HeadersVisibility="Column"
+                              RowHeight="38"
+                              GridLinesVisibility="Horizontal"
+                              HorizontalGridLinesBrush="#F1F5F9">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Invoice #" Binding="{Binding InvoiceNumber}" Width="130" FontWeight="SemiBold"/>
+                            <DataGridTextColumn Header="Customer" Binding="{Binding Customer.Name}" Width="*"/>
+                            <DataGridTextColumn Header="Issue Date" Binding="{Binding IssueDate, StringFormat=dd-MMM-yyyy}" Width="120"/>
+                            <DataGridTextColumn Header="Due Date" Binding="{Binding DueDate, StringFormat=dd-MMM-yyyy}" Width="120"/>
+                            <DataGridTextColumn Header="Amount" Binding="{Binding TotalAmount, Converter={StaticResource CurrencyConverter}}" Width="140"/>
+                            <DataGridTemplateColumn Header="Status" Width="120">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border Background="{Binding Status, Converter={StaticResource StatusBadgeBgConverter}}" 
+                                                CornerRadius="4" Padding="8,3" HorizontalAlignment="Left">
+                                            <TextBlock Text="{Binding Status}" 
+                                                       FontSize="11" 
+                                                       FontWeight="Bold" 
+                                                       Foreground="{Binding Status, Converter={StaticResource StatusBadgeFgConverter}}"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PayPulse/PayPulse.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/PayPulse.Tests/PayPulse.Tests.csproj" />
+  </Folder>
+</Solution>

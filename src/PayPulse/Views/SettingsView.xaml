@@ -1,0 +1,122 @@
+<UserControl x:Class="PayPulse.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:PayPulse.ViewModels"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=vm:SettingsViewModel}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24">
+        <StackPanel HorizontalAlignment="Stretch">
+            <!-- Header -->
+            <StackPanel Margin="0,0,0,20">
+                <TextBlock Text="System Settings &amp; Local Database" FontSize="20" FontWeight="Bold" Foreground="#0F172A"/>
+                <TextBlock Text="Manage your business defaults, database storage, and reset demo data" FontSize="13" Foreground="#64748B"/>
+            </StackPanel>
+
+            <!-- Card 1: Business Profile Defaults -->
+            <Border Background="White" CornerRadius="8" BorderBrush="#E2E8F0" BorderThickness="1" Padding="20" Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock Text="Business &amp; Tax Profile" FontSize="16" FontWeight="Bold" Foreground="#0F172A"/>
+                    <TextBlock Text="Default details populated on newly generated invoice templates" FontSize="12" Foreground="#64748B" Margin="0,4,0,12"/>
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                            <TextBlock Text="Trading / Business Name" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                            <TextBox Text="{Binding BusinessName, UpdateSourceTrigger=PropertyChanged}" Padding="8"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="12,0,0,0">
+                            <TextBlock Text="GSTIN / Tax ID" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                            <TextBox Text="{Binding GstNumber, UpdateSourceTrigger=PropertyChanged}" Padding="8"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                            <TextBlock Text="Currency Standard" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                            <TextBox Text="{Binding CurrencySymbol}" IsReadOnly="True" Background="#F8FAFC" Padding="8"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="12,0,0,0">
+                            <TextBlock Text="Default Tax Rate (%)" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                            <TextBox Text="{Binding DefaultTaxRate, UpdateSourceTrigger=PropertyChanged}" Padding="8"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Card 2: Local Database Storage -->
+            <Border Background="White" CornerRadius="8" BorderBrush="#E2E8F0" BorderThickness="1" Padding="20" Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock Text="SQLite Database Storage" FontSize="16" FontWeight="Bold" Foreground="#0F172A"/>
+                    <TextBlock Text="PayPulse uses a persistent local SQLite database file to ensure zero cloud dependency" FontSize="12" Foreground="#64748B" Margin="0,4,0,12"/>
+
+                    <Border Background="#F8FAFC" CornerRadius="6" Padding="14" BorderBrush="#E2E8F0" BorderThickness="1" Margin="0,0,0,14">
+                        <StackPanel>
+                            <TextBlock Text="FILE LOCATION:" FontSize="11" FontWeight="Bold" Foreground="#64748B"/>
+                            <TextBlock Text="{Binding DatabasePath}" FontSize="12" Foreground="#0F172A" TextWrapping="Wrap" FontFamily="Consolas" Margin="0,4,0,0"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                <TextBlock Text="Size: " FontWeight="SemiBold" Foreground="#64748B"/>
+                                <TextBlock Text="{Binding DatabaseSize}" FontWeight="Bold" Foreground="#0D9488"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Orientation="Horizontal">
+                        <Button Command="{Binding OpenDatabaseFolderCommand}" Content="📂 Open Data Folder in Explorer" Padding="14,8" Background="#F1F5F9" Foreground="#334155" BorderBrush="#CBD5E1" Cursor="Hand" FontWeight="SemiBold" Margin="0,0,12,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Card 3: Live Database Table Browser -->
+            <Border Background="White" CornerRadius="8" BorderBrush="#E2E8F0" BorderThickness="1" Padding="20" Margin="0,0,0,20">
+                <StackPanel>
+                    <Grid Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="Live Database Table Explorer" FontSize="16" FontWeight="Bold" Foreground="#0F172A"/>
+                            <TextBlock Text="Direct real-time view of SQLite schema, raw rows, and stored values" FontSize="12" Foreground="#64748B"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <TextBlock Text="Select Table: " VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,8,0"/>
+                            <ComboBox ItemsSource="{Binding AvailableTables}" 
+                                      SelectedItem="{Binding SelectedTable, Mode=TwoWay}" 
+                                      Width="160" Padding="6"/>
+                            <Button Command="{Binding LoadTableDataCommand}" Content="🔄 Refresh" Margin="8,0,0,0" Padding="10,6" Background="#0D9488" Foreground="White" BorderThickness="0" Cursor="Hand"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <DataGrid ItemsSource="{Binding TableRows}" 
+                              AutoGenerateColumns="True" 
+                              IsReadOnly="True" 
+                              CanUserAddRows="False" 
+                              CanUserDeleteRows="False" 
+                              HeadersVisibility="Column" 
+                              MaxHeight="350" 
+                              BorderBrush="#E2E8F0" 
+                              BorderThickness="1" 
+                              RowHeight="32" 
+                              Background="#F8FAFC"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Card 4: Sample Demonstration Data -->
+            <Border Background="#FFFBEB" CornerRadius="8" BorderBrush="#FDE68A" BorderThickness="1" Padding="20">
+                <StackPanel>
+                    <TextBlock Text="Demonstration &amp; Sample Data" FontSize="16" FontWeight="Bold" Foreground="#92400E"/>
+                    <TextBlock Text="Restore initial college project demonstration clients, sample overdue invoices, UPI payments, and risk analysis records." FontSize="12" Foreground="#78350F" TextWrapping="Wrap" Margin="0,4,0,12"/>
+
+                    <Button Command="{Binding ResetToSampleDataCommand}" Content="🔄 Reset to Sample Demo Data" HorizontalAlignment="Left" Padding="16,8" Background="#D97706" Foreground="White" FontWeight="Bold" BorderThickness="0" Cursor="Hand"/>
+
+                    <TextBlock Text="{Binding StatusMessage}" Foreground="#15803D" FontWeight="Bold" Margin="0,8,0,0"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
